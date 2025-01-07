@@ -1,5 +1,7 @@
 class CaptchaSession {
     doFetch(img, input, button) {
+        img.src = "img/loading.gif";
+
         if(input.disabled) {
             input.disabled = false;
             input.value = "";
@@ -29,6 +31,7 @@ class CaptchaSession {
         img.width = 300;
         img.height = 150;
         img.draggable = false;
+        img.src = "img/loading.gif";
 
         var cont = document.createElement("div");
         cont.className = "zamcaptcha-container";
@@ -49,7 +52,6 @@ class CaptchaSession {
         input.type = "text";
 
         cont.appendChild(input);
-        //cont.appendChild(spacer);
         cont.appendChild(retry);
         cont.appendChild(button);
 

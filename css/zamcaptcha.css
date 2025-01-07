@@ -68,15 +68,17 @@
 }
 
 .zamcaptcha-img {
-    width: 300px;
-    height: 150px;
-
+    width: 30vmax;
+    height: 15vmax;
     margin: 0;
     padding: 0;
-
     user-drag: none;
     -webkit-user-drag: none;
     user-select: none;
+    max-width: 600px;
+    max-height: 300px;
+    min-width: 300px;
+    min-height: 150px;
 }
 
 .zamcaptcha-spacer {

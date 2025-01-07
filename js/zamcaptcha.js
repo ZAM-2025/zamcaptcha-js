@@ -1,4 +1,25 @@
 class CaptchaSession {
+    doFetch(img, input, button) {
+        if(input.disabled) {
+            input.disabled = false;
+            input.value = "";
+        }
+
+        this.fetchCaptcha((json) => {
+            img.src = this.url + json["img"];
+            this.id = json["id"];
+
+            button.onclick = () => {
+                this.validateCaptcha(input.value, this.id, (json) => {
+                    var _status = document.getElementById("zamcaptcha-input");
+                    _status.value = json["message"];
+                    _status.disabled = true;
+                    button.onclick = () => {};
+                });
+            }
+        });
+    }
+
     constructor(protocol, url) {
         this.url = protocol + "://" + url;
         this.elem = document.getElementById("zamcaptcha");
@@ -16,35 +37,30 @@ class CaptchaSession {
         button.innerText = "Verifica";
         button.className = "zamcaptcha-button";
 
+        var retry = document.createElement("button");
+        retry.innerHTML = "&#8635;";
+        retry.className = "zamcaptcha-retry";
+
         var spacer = document.createElement("div");
         spacer.className = "zamcaptcha-spacer";
 
         var input = document.createElement("input");
-        input.className = "zamcaptcha-input";
+        input.id = "zamcaptcha-input";
         input.type = "text";
 
-        var status = document.createElement("p");
-        status.id = "zamcaptcha-status";
-
         cont.appendChild(input);
-        cont.appendChild(spacer);
-        cont.appendChild(status);
+        //cont.appendChild(spacer);
+        cont.appendChild(retry);
         cont.appendChild(button);
 
         this.elem.appendChild(img);
         this.elem.appendChild(cont);
 
-        this.fetchCaptcha((json) => {
-            img.src = this.url + json["img"];
-            this.id = json["id"];
+        this.doFetch(img, input, button);
 
-            button.onclick = () => {
-                this.validateCaptcha(input.value, this.id, (json) => {
-                    var _status = document.getElementById("zamcaptcha-status");
-                    _status.innerText = json["message"];
-                });
-            }
-        });
+        retry.onclick = () => {
+            this.doFetch(img, input, button);
+        };
     }
 
     async validateCaptcha(input, id, callback) {

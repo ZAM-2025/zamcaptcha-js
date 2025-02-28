@@ -66,7 +66,7 @@ class CaptchaSession {
     }
 
     async validateCaptcha(input, id, callback) {
-        const req = this.url + "/validateCaptcha?id=" + id + "&match=" + input;
+        const req = this.url + "/api/captcha/validate?id=" + id + "&match=" + input;
         const response = await fetch(req);
         const json = await response.json();
 
@@ -74,7 +74,7 @@ class CaptchaSession {
     }
 
     async fetchCaptcha(callback) {
-        const response = await fetch(this.url + "/getCaptcha");
+        const response = await fetch(this.url + "/api/captcha/get");
         const json = await response.json();
 
         callback(json);

@@ -1,6 +1,14 @@
 class CaptchaSession {
-    doFetch(img, input, button) {
-        img.src = "img/loading.gif";
+    doFetch(img, input, button, path, callback) {
+        if(this.fetchCallback != undefined && this.fetchCallback != null) {
+            this.fetchCallback();
+        }
+
+        if(path != undefined && path != null) {
+            img.src = path + "/img/loading.gif";
+        } else {
+            img.src = "img/loading.gif";
+        }
 
         if(input.disabled) {
             input.disabled = false;
@@ -17,12 +25,17 @@ class CaptchaSession {
                     _status.value = json["message"];
                     _status.disabled = true;
                     button.onclick = () => {};
+                    callback(json);
                 });
             }
         });
     }
 
-    constructor(protocol, url) {
+    setFetchCallback(callback) {
+        this.fetchCallback = callback;
+    }
+
+    constructor(protocol, url, path, callback) {
         this.url = protocol + "://" + url;
         this.elem = document.getElementById("zamcaptcha");
 
@@ -31,7 +44,12 @@ class CaptchaSession {
         img.width = 300;
         img.height = 150;
         img.draggable = false;
-        img.src = "img/loading.gif";
+
+        if(path != undefined && path != null) {
+            img.src = path + "/img/loading.gif";
+        } else {
+            img.src = "img/loading.gif";
+        }
 
         var cont = document.createElement("div");
         cont.className = "zamcaptcha-container";
@@ -39,10 +57,13 @@ class CaptchaSession {
         var button = document.createElement("button");
         button.innerText = "Verifica";
         button.className = "zamcaptcha-button";
+        button.type = "button";
 
         var retry = document.createElement("button");
         retry.innerHTML = "&#8635;";
         retry.className = "zamcaptcha-retry";
+        retry.type = "button";
+        retry.id = "zamcaptcha-retry";
 
         var spacer = document.createElement("div");
         spacer.className = "zamcaptcha-spacer";
@@ -58,10 +79,10 @@ class CaptchaSession {
         this.elem.appendChild(img);
         this.elem.appendChild(cont);
 
-        this.doFetch(img, input, button);
+        this.doFetch(img, input, button, path, callback);
 
         retry.onclick = () => {
-            this.doFetch(img, input, button);
+            this.doFetch(img, input, button, path, callback);
         };
     }
 
@@ -80,7 +101,3 @@ class CaptchaSession {
         callback(json);
     }
 }
-
-window.onload = () => {
-    var session = new CaptchaSession("http", "localhost:8080");
-};

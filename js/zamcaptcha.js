@@ -1,3 +1,7 @@
+function delay(time) {
+    return new Promise(resolve => setTimeout(resolve, time));
+}
+
 class CaptchaSession {
     doFetch(img, input, button, path, callback) {
         if(this.fetchCallback != undefined && this.fetchCallback != null) {
@@ -51,8 +55,8 @@ class CaptchaSession {
             img.src = "img/loading.gif";
         }
 
-        var cont = document.createElement("div");
-        cont.className = "zamcaptcha-container";
+        var content = document.createElement("div");
+        content.className = "zamcaptcha-content"
 
         var button = document.createElement("button");
         button.innerText = "Verifica";
@@ -71,13 +75,15 @@ class CaptchaSession {
         var input = document.createElement("input");
         input.id = "zamcaptcha-input";
         input.type = "text";
+        input.placeholder = "captcha"
 
-        cont.appendChild(input);
-        cont.appendChild(retry);
-        cont.appendChild(button);
+        content.appendChild(input);
+        content.appendChild(retry);
 
         this.elem.appendChild(img);
-        this.elem.appendChild(cont);
+        this.elem.appendChild(content)
+        this.elem.appendChild(spacer);
+        this.elem.appendChild(button);
 
         this.doFetch(img, input, button, path, callback);
 
